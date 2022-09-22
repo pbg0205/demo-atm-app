@@ -1,6 +1,7 @@
 package com.cooper.demoatmapp.account.domain;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -10,20 +11,22 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.math.BigInteger;
 
+@Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account {
+
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @Column(name = "account_id")
     private String id;
 
-    @Column(name = "account_number", nullable = false, unique = true, updatable = false, length = 30)
+    @Column(nullable = false, unique = true, updatable = false, length = 30)
     private String accountNumber;
 
-    @Column(name = "account_password", nullable = false, unique = true, length = 30)
+    @Column(nullable = false, length = 30)
     private String password;
 
     @Embedded
@@ -40,8 +43,8 @@ public class Account {
         this.userId = userId;
     }
 
-    public static Account create(String accountNumber, String password, Money money, String userId) {
-        return new Account(accountNumber, password, money, userId);
+    public static Account create(String accountNumber, String password, String userId) {
+        return new Account(accountNumber, password, new Money(BigInteger.ZERO), userId);
     }
 
 }
