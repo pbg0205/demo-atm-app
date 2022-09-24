@@ -1,5 +1,6 @@
 package com.cooper.demoatmapp.account.domain;
 
+import com.cooper.demoatmapp.account.converter.MoneyConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,7 +53,11 @@ public class Account {
     }
 
     public void depositMoney(Money depositMoney) {
-        this.balance = this.balance.addMoney(depositMoney);
+        this.balance.addMoney(depositMoney);
+    }
+
+    public void withdrawMoney(Money withdrawMoney) {
+        this.balance.subtractMoney(withdrawMoney);
     }
 
 }

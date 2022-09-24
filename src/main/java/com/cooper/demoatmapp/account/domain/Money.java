@@ -1,5 +1,6 @@
 package com.cooper.demoatmapp.account.domain;
 
+import com.cooper.demoatmapp.account.exception.NegativeMoneyException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,9 +17,23 @@ public class Money {
 
     private BigInteger value;
 
-    public Money addMoney(Money depositMoney) {
-        BigInteger addedMoney = this.value.add(depositMoney.getValue());
-        return new Money(addedMoney);
+    public static Money of(BigInteger value) {
+        return new Money(value);
+    }
+
+    public void addMoney(Money depositMoney) {
+        this.value = this.value.add(depositMoney.value);
+    }
+
+    public void subtractMoney(Money withdrawMoney) {
+        BigInteger nowValue = BigInteger.valueOf(value.longValue());
+        BigInteger subtractValue = nowValue.subtract(withdrawMoney.value);
+
+        if(subtractValue.longValue() < 0) {
+            throw new NegativeMoneyException(subtractValue.longValue());
+        }
+
+        this.value = this.value.subtract(withdrawMoney.value);
     }
 
 }
