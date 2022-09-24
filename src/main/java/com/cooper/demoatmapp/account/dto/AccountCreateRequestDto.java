@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AccountCreateRequestDto {
 
-    private final String userName;
+    private final String name;
+    private final String username;
     private final String phoneNumber;
     private final String email;
     private final String password;

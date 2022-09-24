@@ -4,11 +4,12 @@ import com.cooper.demoatmapp.account.domain.Account;
 import com.cooper.demoatmapp.account.dto.AccountCreateResponseDto;
 import com.cooper.demoatmapp.account.dto.AccountCreateRequestDto;
 import com.cooper.demoatmapp.account.repository.AccountCommandRepository;
-import com.cooper.demoatmapp.user.domain.User;
+import com.cooper.demoatmapp.user.dto.UserLookupResponseDto;
 import com.cooper.demoatmapp.user.dto.UserRegisterRequestDto;
 import com.cooper.demoatmapp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -26,30 +27,32 @@ public class BasicAccountCreateService implements AccountCreateService {
 
     @Override
     public AccountCreateResponseDto createAccount(AccountCreateRequestDto accountCreateRequestDto) {
-        User user = userService.findUserByNameAndAndPhoneNumber(
-                accountCreateRequestDto.getUserName(),
-                accountCreateRequestDto.getPhoneNumber())
-                .orElseGet(() -> registerUser(accountCreateRequestDto));
+        UserRegisterRequestDto userRegisterRequestDto = UserRegisterRequestDto.builder()
+                .name(accountCreateRequestDto.getName())
+                .username(accountCreateRequestDto.getUsername())
+                .phoneNumber(accountCreateRequestDto.getPhoneNumber())
+                .email(accountCreateRequestDto.getEmail())
+                .build();
 
-        Account account = Account.create(createAccountNumber(), accountCreateRequestDto.getPassword(), user.getId());
+        if (!userService.existsByUsername(userRegisterRequestDto.getUsername())) {
+            userService.registerUser(userRegisterRequestDto);
+        }
+
+        UserLookupResponseDto userLookupResponseDto = userService.findByUsername(userRegisterRequestDto.getUsername());
+
+        Account account = Account.create(
+                createAccountNumber(),
+                accountCreateRequestDto.getPassword(),
+                userLookupResponseDto.getUserId()
+        );
         Account createdAccount = accountCommandRepository.save(account);
 
         return AccountCreateResponseDto.builder()
-                .userName(user.getName())
-                .phoneName(user.getPhoneNumber())
+                .userName(userLookupResponseDto.getName())
+                .phoneName(userLookupResponseDto.getPhoneNumber())
                 .accountNumber(createdAccount.getAccountNumber())
-                .email(user.getEmail())
+                .email(userLookupResponseDto.getEmail())
                 .build();
-    }
-
-    private User registerUser(AccountCreateRequestDto accountCreateRequestDto) {
-        UserRegisterRequestDto userRegisterRequestDto = UserRegisterRequestDto.builder()
-                .name(accountCreateRequestDto.getUserName())
-                .email(accountCreateRequestDto.getEmail())
-                .phoneNumber(accountCreateRequestDto.getPhoneNumber())
-                .build();
-
-        return userService.createUser(userRegisterRequestDto);
     }
 
     private String createAccountNumber() {

@@ -23,7 +23,10 @@ public class User {
     private String id;
 
     @Column(nullable = false, length = 20)
-    private String name;
+    private String name; //사용자 이름
+
+    @Column(nullable = false, length = 20)
+    private String username; // 사용자 아이디
 
     @Column(name = "phone_number", nullable = false, length = 30)
     private String phoneNumber;
@@ -31,14 +34,15 @@ public class User {
     @Column(nullable = false, length = 50)
     private String email;
 
-    private User(String name, String phoneNumber, String email) {
+    private User(String name, String username, String phoneNumber, String email) {
         this.name = name;
+        this.username = username;
         this.phoneNumber = phoneNumber;
         this.email = email;
     }
 
-    public static User create(String name, String phoneNumber, String email) {
-        return new User(name, phoneNumber, email);
+    public static User create(String name, String username,String phoneNumber, String email) {
+        return new User(name, username, phoneNumber, email);
     }
 
 }
