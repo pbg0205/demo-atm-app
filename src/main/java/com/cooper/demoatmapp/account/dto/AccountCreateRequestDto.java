@@ -1,16 +1,18 @@
 package com.cooper.demoatmapp.account.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccountCreateRequestDto {
 
-    private final String name;
-    private final String username;
-    private final String phoneNumber;
-    private final String email;
-    private final String password;
+    private String name;
+    private String username;
+    private String phoneNumber;
+    private String email;
+    private String password;
 
 }

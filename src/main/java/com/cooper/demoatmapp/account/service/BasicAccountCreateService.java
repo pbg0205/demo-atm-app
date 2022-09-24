@@ -48,7 +48,7 @@ public class BasicAccountCreateService implements AccountCreateService {
         Account createdAccount = accountRepository.save(account);
 
         return AccountCreateResponseDto.builder()
-                .userName(userLookupResponseDto.getName())
+                .name(userLookupResponseDto.getName())
                 .phoneName(userLookupResponseDto.getPhoneNumber())
                 .accountNumber(createdAccount.getAccountNumber())
                 .email(userLookupResponseDto.getEmail())

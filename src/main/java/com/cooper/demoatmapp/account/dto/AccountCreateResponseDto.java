@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AccountCreateResponseDto {
 
-    private String userName;
+    private String name;
     private String phoneName;
     private String email;
     private String accountNumber;
