@@ -3,7 +3,7 @@ package com.cooper.demoatmapp.account.service;
 import com.cooper.demoatmapp.account.domain.Account;
 import com.cooper.demoatmapp.account.dto.AccountCreateResponseDto;
 import com.cooper.demoatmapp.account.dto.AccountCreateRequestDto;
-import com.cooper.demoatmapp.account.repository.AccountCommandRepository;
+import com.cooper.demoatmapp.account.repository.AccountRepository;
 import com.cooper.demoatmapp.user.dto.UserLookupResponseDto;
 import com.cooper.demoatmapp.user.dto.UserRegisterRequestDto;
 import com.cooper.demoatmapp.user.service.UserService;
@@ -22,7 +22,7 @@ public class BasicAccountCreateService implements AccountCreateService {
     private static final String ACCOUNT_MIDDLE_NUMBER = "00";
     private static final int ACCOUNT_LAST_NUMBER_LENGTH = 9;
 
-    private final AccountCommandRepository accountCommandRepository;
+    private final AccountRepository accountRepository;
     private final UserService userService;
 
     @Override
@@ -45,7 +45,7 @@ public class BasicAccountCreateService implements AccountCreateService {
                 accountCreateRequestDto.getPassword(),
                 userLookupResponseDto.getUserId()
         );
-        Account createdAccount = accountCommandRepository.save(account);
+        Account createdAccount = accountRepository.save(account);
 
         return AccountCreateResponseDto.builder()
                 .userName(userLookupResponseDto.getName())

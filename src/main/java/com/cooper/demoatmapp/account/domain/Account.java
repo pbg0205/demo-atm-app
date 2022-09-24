@@ -47,4 +47,12 @@ public class Account {
         return new Account(accountNumber, password, new Money(BigInteger.ZERO), userId);
     }
 
+    public boolean matchesPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    public void depositMoney(Money depositMoney) {
+        this.balance = this.balance.addMoney(depositMoney);
+    }
+
 }

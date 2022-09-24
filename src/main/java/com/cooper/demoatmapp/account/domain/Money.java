@@ -16,4 +16,9 @@ public class Money {
 
     private BigInteger value;
 
+    public Money addMoney(Money depositMoney) {
+        BigInteger addedMoney = this.value.add(depositMoney.getValue());
+        return new Money(addedMoney);
+    }
+
 }
