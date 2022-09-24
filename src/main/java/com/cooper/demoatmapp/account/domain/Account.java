@@ -1,6 +1,5 @@
 package com.cooper.demoatmapp.account.domain;
 
-import com.cooper.demoatmapp.account.converter.MoneyConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
