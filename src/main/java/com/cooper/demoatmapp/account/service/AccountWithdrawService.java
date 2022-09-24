@@ -1,6 +1,7 @@
 package com.cooper.demoatmapp.account.service;
 
 import com.cooper.demoatmapp.account.domain.Account;
+import com.cooper.demoatmapp.account.domain.Money;
 import com.cooper.demoatmapp.account.dto.AccountWithdrawalRequestDto;
 import com.cooper.demoatmapp.account.dto.AccountWithdrawalResponseDto;
 import com.cooper.demoatmapp.account.exception.AccountNotFoundException;
@@ -11,6 +12,8 @@ import com.cooper.demoatmapp.account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +37,8 @@ public class AccountWithdrawService {
 
     private void withdraw(AccountWithdrawalRequestDto accountWithdrawalRequestDto, Account account) {
         try {
-            account.withdrawMoney(accountWithdrawalRequestDto.getWithdrawalMoney());
+            Money withdrawalMoney = Money.of(accountWithdrawalRequestDto.getWithdrawalMoney());
+            account.withdrawMoney(withdrawalMoney);
         } catch (NegativeMoneyException negativeMoneyException) {
             throw new InsufficientAccountBalanceException();
         }

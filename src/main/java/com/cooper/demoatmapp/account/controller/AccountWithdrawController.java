@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/accounts")
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class AccountWithdrawController {
 
     @PutMapping("/withdrawal")
     public ApiResult<AccountWithdrawalResponseDto> withdrawFromAccount(
-            @RequestBody AccountWithdrawalRequestDto accountWithdrawalRequestDto
+            @RequestBody @Valid AccountWithdrawalRequestDto accountWithdrawalRequestDto
     ) {
         AccountWithdrawalResponseDto accountDepositResponseDto
                 = accountWithdrawalService.withdraw(accountWithdrawalRequestDto);

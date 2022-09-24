@@ -26,7 +26,8 @@ public class AccountDepositService {
             throw new AccountPasswordNotMatchException();
         }
 
-        account.depositMoney(accountDepositRequestDto.getDepositMoney());
+        Money depositMoney = Money.of(accountDepositRequestDto.getDepositMoney());
+        account.depositMoney(depositMoney);
 
         return AccountDepositResponseDto.fromEntity(account);
     }
