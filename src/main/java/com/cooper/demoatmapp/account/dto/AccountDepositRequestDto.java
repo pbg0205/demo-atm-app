@@ -1,5 +1,6 @@
 package com.cooper.demoatmapp.account.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.math.BigInteger;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class AccountDepositRequestDto {
 
     @NotNull
