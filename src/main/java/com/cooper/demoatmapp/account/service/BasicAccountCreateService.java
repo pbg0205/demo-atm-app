@@ -9,6 +9,7 @@ import com.cooper.demoatmapp.user.dto.UserRegisterRequestDto;
 import com.cooper.demoatmapp.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Random;
@@ -26,6 +27,7 @@ public class BasicAccountCreateService implements AccountCreateService {
     private final UserService userService;
 
     @Override
+    @Transactional
     public AccountCreateResponseDto createAccount(AccountCreateRequestDto accountCreateRequestDto) {
         UserRegisterRequestDto userRegisterRequestDto = UserRegisterRequestDto.builder()
                 .name(accountCreateRequestDto.getName())
