@@ -23,8 +23,7 @@ public class UserService {
     }
 
     public UserRegisterResponseDto registerUser(UserRegisterRequestDto userRegisterRequestDto) {
-        boolean existsUser = userRepository.existsByUsername(userRegisterRequestDto.getUsername());
-        if(existsUser) {
+        if(userRepository.existsByUsername(userRegisterRequestDto.getUsername())) {
             throw new UserAlreadyExistenceException();
         }
 
