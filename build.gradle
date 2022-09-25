@@ -72,7 +72,10 @@ jacocoTestReport {
 jacocoTestCoverageVerification {
     violationRules {
         rule {
-            //테스트 커버리지 옵션 추가하기
+            limit {
+                element = 'CLASS'
+                minimum = 0.70
+            }
         }
     }
 }
