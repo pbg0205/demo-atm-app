@@ -1,21 +1,28 @@
 package com.cooper.demoatmapp.account.domain;
 
+import com.cooper.demoatmapp.account.listener.AccountHistoryListener;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(value = {AuditingEntityListener.class, AccountHistoryListener.class})
 public class Account {
 
     @Id
@@ -35,6 +42,11 @@ public class Account {
 
     @Column(name = "account_user_id", nullable = false)
     private String userId;
+
+    @CreatedDate
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "created_date", updatable = false)
+    private LocalDateTime createdDate;
 
     private Account(String accountNumber, String password, Money balance, String userId) {
         this.accountNumber = accountNumber;
