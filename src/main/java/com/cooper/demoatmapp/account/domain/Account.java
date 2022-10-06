@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -22,7 +21,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(value = {AuditingEntityListener.class, AccountHistoryListener.class})
+@EntityListeners(value = AuditingEntityListener.class)
 public class Account {
 
     @Id
@@ -44,8 +43,7 @@ public class Account {
     private String userId;
 
     @CreatedDate
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "created_date", updatable = false)
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
     private Account(String accountNumber, String password, Money balance, String userId) {

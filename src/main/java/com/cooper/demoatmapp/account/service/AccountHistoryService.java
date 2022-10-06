@@ -1,7 +1,7 @@
 package com.cooper.demoatmapp.account.service;
 
 import com.cooper.demoatmapp.account.domain.AccountHistory;
-import com.cooper.demoatmapp.account.dto.AccountHistoryCreateDto;
+import com.cooper.demoatmapp.account.dto.AccountHistoryCreateRequestDto;
 import com.cooper.demoatmapp.account.dto.AccountHistoryLookupDto;
 import com.cooper.demoatmapp.account.repository.AccountHistoryRepository;
 import com.cooper.demoatmapp.account.repository.AccountHistoryRepositoryJpa;
@@ -24,8 +24,8 @@ public class AccountHistoryService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void save(AccountHistoryCreateDto accountHistoryCreateDto) {
-        AccountHistory accountHistory = accountHistoryCreateDto.toEntity();
+    public void save(AccountHistoryCreateRequestDto accountHistoryCreateRequestDto) {
+        AccountHistory accountHistory = accountHistoryCreateRequestDto.toEntity();
         accountHistoryRepositoryJpa.save(accountHistory);
     }
 

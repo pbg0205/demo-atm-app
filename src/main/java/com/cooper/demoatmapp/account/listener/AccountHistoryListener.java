@@ -2,59 +2,98 @@ package com.cooper.demoatmapp.account.listener;
 
 import com.cooper.demoatmapp.account.domain.Account;
 import com.cooper.demoatmapp.account.domain.Money;
-import com.cooper.demoatmapp.account.dto.AccountHistoryCreateDto;
+import com.cooper.demoatmapp.account.dto.AccountHistoryCreateRequestDto;
 import com.cooper.demoatmapp.account.dto.AccountHistoryLookupDto;
 import com.cooper.demoatmapp.account.service.AccountHistoryService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.event.spi.EventSource;
+import org.hibernate.event.spi.PostInsertEvent;
+import org.hibernate.event.spi.PostInsertEventListener;
+import org.hibernate.event.spi.PostUpdateEvent;
+import org.hibernate.event.spi.PostUpdateEventListener;
+import org.hibernate.persister.entity.EntityPersister;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.PostPersist;
-import javax.persistence.PostUpdate;
 import java.math.BigInteger;
-import java.time.LocalDateTime;
 
 @Component
-public class AccountHistoryListener {
+@RequiredArgsConstructor
+public class AccountHistoryListener implements PostInsertEventListener, PostUpdateEventListener {
 
-    @Lazy
-    @Autowired
     private AccountHistoryService accountHistoryService;
 
-    @PostPersist
-    public void postPersist(Account account) {
-        AccountHistoryCreateDto accountHistoryCreateDto = AccountHistoryCreateDto.create(
+    public void saveAccountCreateHistory(Account account) {
+        AccountHistoryCreateRequestDto accountHistoryCreateRequestDto = AccountHistoryCreateRequestDto.create(
                 account.getAccountNumber(),
                 account.getBalance().getValue(),
-                account.getBalance().getValue(),
-                LocalDateTime.now()
+                account.getBalance().getValue()
         );
-        accountHistoryService.save(accountHistoryCreateDto);
+        accountHistoryService.save(accountHistoryCreateRequestDto);
     }
 
-    @PostUpdate
-    public void postUpdate(Account account) {
+    public void saveAccountUpdateHistory(Account account) {
         AccountHistoryLookupDto currentAccountHistoryLookupDto
                 = accountHistoryService.findTopByCreatedDateDesc(account.getAccountNumber());
 
         long currentBalanceValue = account.getBalance().getValue().longValue();
         Money currentBalance = Money.of(BigInteger.valueOf(currentBalanceValue));
 
-        long currentMoneyValue = currentAccountHistoryLookupDto.getCurrentMoney().longValue();
-        Money currentMoney = Money.of(BigInteger.valueOf(currentMoneyValue));
-
         Money newCurrentMoney = Money.of(BigInteger.valueOf(currentBalance.getValue().longValue()));
         Money newMoneyHistory
                 = Money.of(currentBalance.getValue().subtract(currentAccountHistoryLookupDto.getCurrentBalance()));
 
-        AccountHistoryCreateDto accountHistoryCreateDto = AccountHistoryCreateDto.create(
+        AccountHistoryCreateRequestDto accountHistoryCreateRequestDto = AccountHistoryCreateRequestDto.create(
                 account.getAccountNumber(),
                 newCurrentMoney.getValue(),
-                newMoneyHistory.getValue(),
-                LocalDateTime.now()
+                newMoneyHistory.getValue()
         );
 
-        accountHistoryService.save(accountHistoryCreateDto);
+        accountHistoryService.save(accountHistoryCreateRequestDto);
+    }
+
+    @Override
+    public void onPostInsert(PostInsertEvent event) {
+        Object entity = event.getEntity();
+        boolean accountType = entity instanceof Account;
+
+        if (!accountType) {
+            return;
+        }
+
+        EventSource eventSession = event.getSession();
+        eventSession.getSession().getActionQueue().registerProcess(((success, session) -> {
+            if(success) {
+                saveAccountCreateHistory((Account) entity);
+            }
+        }));
+
+    }
+
+    @Override
+    public void onPostUpdate(PostUpdateEvent event) {
+        Object entity = event.getEntity();
+        boolean accountType = entity instanceof Account;
+
+        if (!accountType) {
+            return;
+        }
+
+        EventSource eventSession = event.getSession();
+        eventSession.getSession().getActionQueue().registerProcess(((success, session) -> {
+            if(success) {
+                saveAccountUpdateHistory((Account) entity);
+            }
+        }));
+    }
+
+    @Override
+    public boolean requiresPostCommitHanding(EntityPersister persister) {
+        return true;
+    }
+
+    @Override
+    public boolean requiresPostCommitHandling(EntityPersister persister) {
+        return PostInsertEventListener.super.requiresPostCommitHandling(persister);
     }
 
 }

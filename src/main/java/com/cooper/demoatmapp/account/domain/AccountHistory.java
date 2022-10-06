@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -40,24 +41,18 @@ public class AccountHistory {
     @AttributeOverride(name = "value", column = @Column(name = "money_history"))
     private Money moneyHistory;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "created_date", updatable = false)
+    @CreatedDate
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
-    private AccountHistory(String accountNumber, Money currentBalance, Money moneyHistory, LocalDateTime createdDate) {
+    private AccountHistory(String accountNumber, Money currentBalance, Money moneyHistory) {
         this.accountNumber = accountNumber;
         this.currentBalance = currentBalance;
         this.moneyHistory = moneyHistory;
-        this.createdDate = createdDate;
     }
 
-    public static AccountHistory create(
-            String accountNumber,
-            Money currentMoney,
-            Money moneyHistory,
-            LocalDateTime createdDate
-    ) {
-        return new AccountHistory(accountNumber, currentMoney, moneyHistory, createdDate);
+    public static AccountHistory create(String accountNumber, Money currentMoney, Money moneyHistory) {
+        return new AccountHistory(accountNumber, currentMoney, moneyHistory);
     }
 
 }
