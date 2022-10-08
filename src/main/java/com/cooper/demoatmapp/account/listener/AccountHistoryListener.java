@@ -20,7 +20,7 @@ import java.math.BigInteger;
 @RequiredArgsConstructor
 public class AccountHistoryListener implements PostInsertEventListener, PostUpdateEventListener {
 
-    private AccountHistoryService accountHistoryService;
+    private final AccountHistoryService accountHistoryService;
 
     public void saveAccountCreateHistory(Account account) {
         AccountHistoryCreateRequestDto accountHistoryCreateRequestDto = AccountHistoryCreateRequestDto.create(

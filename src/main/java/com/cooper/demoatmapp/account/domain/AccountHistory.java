@@ -1,5 +1,6 @@
 package com.cooper.demoatmapp.account.domain;
 
+import com.cooper.demoatmapp.account.converter.AccountAttributeConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -31,6 +33,7 @@ public class AccountHistory {
     private String id;
 
     @Column(name = "account_number", nullable = false, updatable = false)
+    @Convert(converter = AccountAttributeConverter.class)
     private String accountNumber;
 
     @Embedded

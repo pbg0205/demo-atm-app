@@ -1,5 +1,6 @@
 package com.cooper.demoatmapp.user.domain;
 
+import com.cooper.demoatmapp.user.converter.UserAttributeConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -25,15 +27,19 @@ public class User {
     private String id;
 
     @Column(nullable = false, length = 20)
+    @Convert(converter = UserAttributeConverter.class)
     private String name; //사용자 이름
 
     @Column(nullable = false, length = 20)
+    @Convert(converter = UserAttributeConverter.class)
     private String username; // 사용자 아이디
 
     @Column(name = "phone_number", nullable = false, length = 30)
+    @Convert(converter = UserAttributeConverter.class)
     private String phoneNumber;
 
     @Column(nullable = false, length = 50)
+    @Convert(converter = UserAttributeConverter.class)
     private String email;
 
     private User(String name, String username, String phoneNumber, String email) {

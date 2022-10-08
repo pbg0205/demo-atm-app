@@ -1,4 +1,4 @@
-package com.cooper.demoatmapp.common;
+package com.cooper.demoatmapp.common.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

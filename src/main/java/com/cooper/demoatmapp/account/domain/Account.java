@@ -1,6 +1,6 @@
 package com.cooper.demoatmapp.account.domain;
 
-import com.cooper.demoatmapp.account.listener.AccountHistoryListener;
+import com.cooper.demoatmapp.account.converter.AccountAttributeConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -30,6 +31,7 @@ public class Account {
     private String id;
 
     @Column(nullable = false, unique = true, updatable = false, length = 30)
+    @Convert(converter = AccountAttributeConverter.class)
     private String accountNumber;
 
     @Column(nullable = false, length = 30)
