@@ -22,35 +22,6 @@ public class AccountHistoryListener implements PostInsertEventListener, PostUpda
 
     private final AccountHistoryService accountHistoryService;
 
-    public void saveAccountCreateHistory(Account account) {
-        AccountHistoryCreateRequestDto accountHistoryCreateRequestDto = AccountHistoryCreateRequestDto.create(
-                account.getAccountNumber(),
-                account.getBalance().getValue(),
-                account.getBalance().getValue()
-        );
-        accountHistoryService.save(accountHistoryCreateRequestDto);
-    }
-
-    public void saveAccountUpdateHistory(Account account) {
-        AccountHistoryLookupDto currentAccountHistoryLookupDto
-                = accountHistoryService.findTopByCreatedDateDesc(account.getAccountNumber());
-
-        long currentBalanceValue = account.getBalance().getValue().longValue();
-        Money currentBalance = Money.of(BigInteger.valueOf(currentBalanceValue));
-
-        Money newCurrentMoney = Money.of(BigInteger.valueOf(currentBalance.getValue().longValue()));
-        Money newMoneyHistory
-                = Money.of(currentBalance.getValue().subtract(currentAccountHistoryLookupDto.getCurrentBalance()));
-
-        AccountHistoryCreateRequestDto accountHistoryCreateRequestDto = AccountHistoryCreateRequestDto.create(
-                account.getAccountNumber(),
-                newCurrentMoney.getValue(),
-                newMoneyHistory.getValue()
-        );
-
-        accountHistoryService.save(accountHistoryCreateRequestDto);
-    }
-
     @Override
     public void onPostInsert(PostInsertEvent event) {
         Object entity = event.getEntity();
@@ -69,6 +40,15 @@ public class AccountHistoryListener implements PostInsertEventListener, PostUpda
 
     }
 
+    private void saveAccountCreateHistory(Account account) {
+        AccountHistoryCreateRequestDto accountHistoryCreateRequestDto = AccountHistoryCreateRequestDto.create(
+                account.getAccountNumber(),
+                account.getBalance().getValue(),
+                account.getBalance().getValue()
+        );
+        accountHistoryService.save(accountHistoryCreateRequestDto);
+    }
+
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
         Object entity = event.getEntity();
@@ -84,6 +64,26 @@ public class AccountHistoryListener implements PostInsertEventListener, PostUpda
                 saveAccountUpdateHistory((Account) entity);
             }
         }));
+    }
+
+    private void saveAccountUpdateHistory(Account account) {
+        AccountHistoryLookupDto currentAccountHistoryLookupDto
+                = accountHistoryService.findTopByCreatedDateDesc(account.getAccountNumber());
+
+        long currentBalanceValue = account.getBalance().getValue().longValue();
+        Money currentBalance = Money.of(BigInteger.valueOf(currentBalanceValue));
+
+        Money newCurrentMoney = Money.of(BigInteger.valueOf(currentBalance.getValue().longValue()));
+        Money newMoneyHistory
+                = Money.of(currentBalance.getValue().subtract(currentAccountHistoryLookupDto.getCurrentBalance()));
+
+        AccountHistoryCreateRequestDto accountHistoryCreateRequestDto = AccountHistoryCreateRequestDto.create(
+                account.getAccountNumber(),
+                newCurrentMoney.getValue(),
+                newMoneyHistory.getValue()
+        );
+
+        accountHistoryService.save(accountHistoryCreateRequestDto);
     }
 
     @Override
